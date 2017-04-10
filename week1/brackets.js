@@ -1,43 +1,49 @@
-//var stack;
 function brackets(str) {
   var stack = new Array();
-
-  var lastOpener;
+  var returnThis;
   for(var i = 1; i <= str.length; i++) {
-    var character = str[i-1];
-    var lastOpenBracketIndex;
+    var character = str[i - 1];
 
+    // opener
     if (character === '[' || character === '{' || character === '(') {
-      stack.push(character);
-      lastOpenBracketIndex = i;
+      stack.push({character: character, i: i});
+      returnThis = i;
       continue;
     }
 
-    if (character === ']' && stack.last === '[') {
-      stack.pop();
-      continue;
-    }
-
-    if (character === '}' && stack.last === '{') {
-      stack.pop();
-      continue;
-    }
-
-    if (character === ')' && stack.last === '(') {
-      stack.pop();
-      continue;
-    }
-
+    // closer
     if (character === ']' || character === '}' || character === ')') {
-      return i;
+
+      // closer with no previous opener
+      if (stack.length === 0){
+        return i;
+      } else { // closer with previous openers
+        var last = stack[stack.length - 1].character;
+        if (character === ']' && last === '[') {
+          stack.pop();
+          continue;
+        }
+
+        if (character === '}' && last === '{') {
+          stack.pop();
+          continue;
+        }
+
+        if (character === ')' && last === '(') {
+          stack.pop();
+          continue;
+        }
+
+        return i;
+      }
     }
   }
 
-  if (stack.length === 0) {
+  if (stack.length == 0) {
     return 'Success';
   }
 
-  return lastOpenBracketIndex
+  return stack[stack.length - 1].i;
 }
 
 process.stdin.setEncoding('utf8');
